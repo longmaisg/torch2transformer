@@ -1,0 +1,20 @@
+[project]
+name = "torch2transformer"
+version = "0.1.0"
+description = "Wrap plain PyTorch models for the Hugging Face Transformers ecosystem"
+authors = [{ name = "Louis MAI" }]
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "torch",
+    "transformers>=4.30",
+]
+
+[project.urls]
+Homepage = "https://github.com/louismai/torch2transformer"
+Repository = "https://github.com/louismai/torch2transformer"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
