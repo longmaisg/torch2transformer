@@ -12,12 +12,18 @@ seamlessly with the Hugging Face Transformers ecosystem.
 ## Example
 
 ```python
-from torch2transformer import wrap_model
+from torch2transformer import TorchAdapter, wrap_model, load_model
 
+# wrap Pytorch model as a Transformer model
 model = wrap_model(
-    torch_model_cls=MyTorchModel,
-    torch_model_kwargs={"vocab_size": 100},
+    torch_model_cls=TinyCharModel,
+    torch_model_kwargs={"vocab_size": 100, "hidden_size": 32},
+    task_type="causal_lm"
 )
+# then can be used with Trainer()
 
-trainer = Trainer(model=model, ...)
-trainer.train()
+# save model
+model.save_pretrained("./tiny_ckpt")
+
+# load model
+model = load_model("./tiny_ckpt", torch_model_cls=TinyCharModel)
