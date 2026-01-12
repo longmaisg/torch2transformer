@@ -22,3 +22,8 @@ def wrap_model(
         torch_model_cls=torch_model_cls
     )
     return model
+
+# factory.py
+def load_model(path, torch_model_cls, **kwargs):
+    return Torch2TransformerModel.from_pretrained(path, torch_model_cls=torch_model_cls, **kwargs)
+

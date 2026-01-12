@@ -103,7 +103,7 @@ from transformers import Trainer, TrainingArguments
 # model = TinyTransformersModel(TinyConfig())
 
 # Wrap the model for HF Trainer
-from torch2transformer import TorchAdapter, wrap_model, Torch2TransformerModel
+from torch2transformer import TorchAdapter, wrap_model, load_model
 model = wrap_model(
     torch_model_cls=TinyCharModel,
     torch_model_kwargs={"vocab_size": 100, "hidden_size": 32},
@@ -134,7 +134,7 @@ trainer.train()
 
 model.save_pretrained("/Users/longmai/projects/torch2transformer/tiny_ckpt")
 
-model = Torch2TransformerModel.from_pretrained("/Users/longmai/projects/torch2transformer/tiny_ckpt", torch_model_cls=TinyCharModel)
+model = load_model("/Users/longmai/projects/torch2transformer/tiny_ckpt", torch_model_cls=TinyCharModel)
 
 
 # Step 7: Generate text
