@@ -6,12 +6,10 @@ class Torch2TransformerConfig(PretrainedConfig):
 
     def __init__(
         self,
-        torch_model_cls=None,
         torch_model_kwargs=None,
         task_type="causal_lm",
         **kwargs
     ):
         super().__init__(**kwargs)
-        self.torch_model_cls = torch_model_cls
         self.torch_model_kwargs = torch_model_kwargs or {}
         self.task_type = task_type

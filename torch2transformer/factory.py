@@ -12,10 +12,13 @@ def wrap_model(
     Wrap a plain PyTorch model for Hugging Face Trainer.
     """
     config = Torch2TransformerConfig(
-        torch_model_cls=torch_model_cls,
         torch_model_kwargs=torch_model_kwargs,
         task_type=task_type,
         **hf_kwargs
     )
 
-    return Torch2TransformerModel(config)
+    model = Torch2TransformerModel(
+        config=config,
+        torch_model_cls=torch_model_cls
+    )
+    return model
