@@ -11,3 +11,9 @@ wheels/
 # Virtual environments
 .env
 .venv
+
+# Checkpoints
+
+*ckpt/
+.checkpoint/
+*.ckpt
