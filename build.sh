@@ -11,7 +11,14 @@ git remote -v
 
 git push -u origin main
 
-
+# install the package in editable mode and test
 uv pip install -e .
 python -c "from torch2transformer import wrap_model; print(wrap_model)"
+
+# build and upload to PyPI
+uv pip install build twine
+python -m build
+echo $PyPY_API_TOKEN | pbcopy
+twine upload dist/abbrcompress-0.1.1*
+
 
