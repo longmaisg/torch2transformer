@@ -19,6 +19,6 @@ python -c "from torch2transformer import wrap_model; print(wrap_model)"
 uv pip install build twine
 python -m build
 echo $PyPY_API_TOKEN | pbcopy
-twine upload dist/abbrcompress-0.1.1*
+twine upload dist/torch2transformer-0.1.0*
 
 

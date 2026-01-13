@@ -1,8 +1,11 @@
 # torch2transformer/model.py
 from transformers import PreTrainedModel
 from .config import Torch2TransformerConfig
+from .version import __version__
 import torch
 import os
+import warnings
+from packaging import version
 
 class Torch2TransformerModel(PreTrainedModel):
     config_class = Torch2TransformerConfig
@@ -32,6 +35,23 @@ class Torch2TransformerModel(PreTrainedModel):
 
         # load config
         config = Torch2TransformerConfig.from_pretrained(path, **kwargs)
+
+        # check version compatibility
+        saved_version = getattr(config, "torch2transformer_version", None)
+        if saved_version is not None:
+            if version.parse(saved_version) > version.parse(__version__):
+                warnings.warn(
+                    f"Checkpoint was created with torch2transformer {saved_version}, "
+                    f"but you are running {__version__}. "
+                    "Unexpected behavior may occur.",
+                    UserWarning,
+                )
+        else:
+            warnings.warn(
+                "Checkpoint was created before torch2transformer versioning existed. "
+                "Assuming compatibility.",
+                UserWarning,
+            )
 
         # create model instance
         model = cls(config=config, torch_model_cls=torch_model_cls)
