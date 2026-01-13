@@ -1,7 +1,7 @@
 # torch2transformer
 
 **torch2transformer** lets you wrap plain PyTorch models so they work
-seamlessly with the Hugging Face Transformers ecosystem.
+seamlessly with the Hugging Face Transformers ecosystem. Important note: The original PyTorch model class must be available at run time and load time.
 
 ## Features
 - Use `Trainer` with any PyTorch model
