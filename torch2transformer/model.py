@@ -1,5 +1,7 @@
 # torch2transformer/model.py
 from transformers import PreTrainedModel
+from transformers.generation.utils import GenerationMixin
+from transformers.modeling_outputs import CausalLMOutput
 from .config import Torch2TransformerConfig
 from .version import __version__
 import torch
@@ -7,7 +9,7 @@ import os
 import warnings
 from packaging import version
 
-class Torch2TransformerModel(PreTrainedModel):
+class Torch2TransformerModel(PreTrainedModel, GenerationMixin):
     config_class = Torch2TransformerConfig
 
     def __init__(self, config, torch_model_cls=None):
@@ -27,6 +29,19 @@ class Torch2TransformerModel(PreTrainedModel):
             input_ids=input_ids,
             labels=labels,
             **kwargs
+        )
+    
+    def forward(self, input_ids=None, labels=None, **kwargs):
+        outputs = self.torch_model(input_ids, labels=labels)
+
+        if not isinstance(outputs, dict) or "logits" not in outputs:
+            raise ValueError(
+                "Wrapped torch model must return a dict with a 'logits' key"
+            )
+        # wrap in HF ModelOutput
+        return CausalLMOutput(
+            loss=outputs.get("loss", None),
+            logits=outputs["logits"]
         )
     
     @classmethod
@@ -72,4 +87,7 @@ class Torch2TransformerModel(PreTrainedModel):
 
         model.load_state_dict(state_dict)
         return model
+    
+    def prepare_inputs_for_generation(self, input_ids, **kwargs):
+        return {"input_ids": input_ids}
             

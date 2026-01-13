@@ -1,9 +1,9 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-from torch2transformer import TorchAdapter
 from torch.utils.data import Dataset
 from transformers import Trainer, TrainingArguments
+from torch2transformer import wrap_model, load_model
 
 # Prepare toy data
 posts = [
@@ -37,7 +37,7 @@ Y = torch.tensor(Y)  # [num_samples, seq_len]
 print(X.shape, Y.shape)
 
 # Build a tiny PyTorch model
-class TinyCharModel(TorchAdapter):
+class TinyCharModel(nn.Module):
     def __init__(self, vocab_size, hidden_size=32):
         super().__init__()
         self.embed = nn.Embedding(vocab_size, hidden_size)
@@ -74,7 +74,6 @@ class CharDataset(Dataset):
 train_dataset = CharDataset(X, Y)
 
 # Wrap the model for HF Trainer
-from torch2transformer import TorchAdapter, wrap_model, load_model
 model = wrap_model(
     torch_model_cls=TinyCharModel,
     torch_model_kwargs={"vocab_size": 100, "hidden_size": 32},
@@ -117,7 +116,7 @@ model.to(device)
 input_ids = input_ids.to(device)
 # labels = labels.to(device)  # if labels exist
 
-
+# autoregressive generation
 model.eval()
 with torch.no_grad():
     logits = model(input_ids)["logits"]
@@ -126,3 +125,12 @@ with torch.no_grad():
 pred_text = "".join([id2char[i.item()] for i in pred_ids])
 print("Seed:", seed_text)
 print("Generated:", pred_text)
+
+# Or use built-in generate method
+model.eval()
+input_ids = torch.tensor([[char2id[c] for c in "I love "]])
+output_ids = model.generate(input_ids, max_new_tokens=20)
+pred_text = "".join([id2char[i] for i in output_ids[0].tolist()])
+print(pred_text)
+
+
